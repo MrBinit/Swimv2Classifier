@@ -7,7 +7,7 @@ import torch
 import numpy as np
 
 # Load configuration from config.yaml
-config_path = "/home/binit/classifier/src/config/config.yaml"
+config_path = "/app/config/config.yaml"
 if not os.path.exists(config_path):
     raise FileNotFoundError(f"Configuration file not found at {config_path}")
 

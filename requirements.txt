@@ -12,3 +12,6 @@ scikit-learn
 tensorboard
 datasets
 python-multipart
+opencv-python 
+scikit-image 
+numpy
