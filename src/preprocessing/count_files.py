@@ -11,7 +11,7 @@ def count_files_in_folder(folder_path):
     return file_count
 
 # Example usage
-folder_path = "/home/binit/classifier/data/processed/real"  # Replace with your folder path
+folder_path = "/home/binit/classifier/data/split_data/train/AI"  # Replace with your folder path
 print(f"Number of files in the folder: {count_files_in_folder(folder_path)}")
 
 
