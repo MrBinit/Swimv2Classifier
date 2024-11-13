@@ -12,6 +12,7 @@ from tqdm import tqdm
 with open('/home/binit/classifier/src/config/config.yaml', 'r') as file:
     config = yaml.safe_load(file)
 
+
 # Paths and hyperparameters
 train_dir = config['paths']['train_dir']
 val_dir = config['paths']['val_dir']
@@ -23,7 +24,7 @@ os.makedirs(checkpoint_dir, exist_ok=True)
 batch_size = int(config['hyperparameters']['batch_size'])
 num_epochs = int(config['hyperparameters']['num_epochs'])
 learning_rate = float(config['hyperparameters']['learning_rate'])
-weight_decay = float(config['hyperparameters']['weight_decay'])
+# weight_decay = float(config['hyperparameters']['weight_decay'])
 num_classes = int(config['hyperparameters']['num_classes'])
 patience = int(config['hyperparameters']['patience'])
 log_interval = int(config['logging']['log_interval'])
@@ -74,7 +75,6 @@ val_dataset = ImageFolderWithLabels(val_dir)
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
-# Initialize the Swin Transformer model with weights and set dropout if applicable
 model = swin_v2_t(weights=Swin_V2_T_Weights.DEFAULT)
 model.head = nn.Sequential(
     nn.Dropout(config['dropout']['rate']),
@@ -90,7 +90,7 @@ for param in model.head.parameters():
     param.requires_grad = True
 
 # Unfreeze the last two stages in the features
-for layer in model.features[-2:]:
+for layer in model.features[-3:]:
     for param in layer.parameters():
         param.requires_grad = True
 
@@ -99,7 +99,7 @@ model = model.to(device)
 
 # Loss function, optimizer, and learning rate scheduler
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=learning_rate, weight_decay=weight_decay)
+optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=learning_rate)
 
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=2)
 
@@ -109,7 +109,7 @@ writer = SummaryWriter(log_dir=log_dir) if config['logging']['tensorboard'] else
 # Function to save checkpoint
 def save_checkpoint(epoch, step, checkpoints_saved):
     checkpoint_path = os.path.join(checkpoint_dir, f'checkpoint_epoch{epoch}_step{step}.pth')
-    torch.save(model.state_dict(), checkpoint_path)
+    torch.save(model.state_dict(), checkpoint_path,  _use_new_zipfile_serialization=True)
     checkpoints_saved.append(checkpoint_path)
     if len(checkpoints_saved) > max_checkpoints:
         oldest_checkpoint = checkpoints_saved.pop(0)
@@ -117,7 +117,7 @@ def save_checkpoint(epoch, step, checkpoints_saved):
 
 # Training loop with early stopping, scheduler, and logging
 step_count = 0
-final_model_path = os.path.join(final_model_dir, 'best_model.pth')
+best_model_path = os.path.join(final_model_dir, 'best_model.pth')
 os.makedirs(final_model_dir, exist_ok=True)
 
 for epoch in range(num_epochs):
@@ -179,8 +179,8 @@ for epoch in range(num_epochs):
                 epochs_no_improve = 0
 
                 # Save the best model
-                torch.save(model.state_dict(), final_model_path)
-                print(f"Best model saved to {final_model_path}")
+                torch.save(model.state_dict(), best_model_path)
+                print(f"Best model saved to {best_model_path}")
             else:
                 epochs_no_improve += 1
                 if epochs_no_improve >= patience:
