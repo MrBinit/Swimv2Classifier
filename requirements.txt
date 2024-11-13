@@ -1,0 +1,14 @@
+torch
+numpy
+fastapi
+transformers
+uvicorn
+kagglehub
+pillow
+opencv-python
+pyvips
+albumentations
+scikit-learn
+tensorboard
+datasets
+python-multipart

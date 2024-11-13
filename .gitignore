@@ -1,0 +1,7 @@
+data/
+venv
+models
+logs
+checkpoints 
+hf_model
+

@@ -1,0 +1,58 @@
+paths:
+  raw_data: "/home/binit/classifier/data/raw"
+  processed_data: "/home/binit/classifier/data/processed"
+  augmented_data: "/home/binit/classifier/data/augmented"
+  split_data: "/home/binit/classifier/data/split_data"
+  checkout_dir:  "/home/binit/classifier/checkpoints"
+  log_dir: "/home/binit/classifier/logs"
+  model: "/home/binit/classifier/models"
+  train_dir: "/home/binit/classifier/data/split_data/train"
+  test_dir: "/home/binit/classifier/data/split_data/test"
+  val_dir: "/home/binit/classifier/data/split_data/validation"
+  external_dir : "/home/binit/classifier/data/external"
+
+models:
+  model_name: "microsoft/swinv2-tiny-patch4-window8-256"
+  image_extensions: [".png", ".jpg", ".jpeg"]
+
+dataset:
+  id1: "cashbowman/ai-generated-images-vs-real-images"
+  id2: "mariammarioma/midjourney-imagenet-real-vs-synth"
+  id3: "tristanzhang32/ai-generated-images-vs-real-images"
+  id4: "sunnykakar/shoes-dataset-real-and-ai-generated-images"
+  id5: "mohannadaymansalah/stable-diffusion-dataaaaaaaaa"
+  folder_name1: "dataset1"
+  folder_name2: "dataset2"
+  folder_name3: "dataset3"
+  folder_name4: "dataset4"
+  folder_name5: "dataset5"
+
+splits:
+  train: "0.7"
+  test: "0.15"
+  validation: "0.15"
+
+hyperparameters:
+  batch_size: 16               
+  num_epochs: 100                
+  learning_rate: 5e-3           
+  learning_rate_decay: 0.5     
+  weight_decay: 1e-4          
+  num_classes: 2
+  patience: 5                   
+  save_every_n_steps: 100
+  max_checkpoints: 3
+
+scheduler:
+  type: "StepLR"               
+  step_size: 10                
+  gamma: 0.1                   
+
+dropout:
+  rate: 0.3                   
+
+logging:
+  tensorboard: True             
+  log_interval: 100             
+  checkpoint_dir: "/home/binit/classifier/checkpoints"
+  max_checkpoints: 3            
